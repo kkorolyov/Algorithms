@@ -2,39 +2,64 @@
 # "best of 7" game series in order to end with a net result of either +$1000 or -$1000
 
 def main():
-	results = (
-		(0, 0),	(1, 1),	(2, 2),	(3, 3),
-		(1, 0),	(2, 0),	(3, 0),	(4, 0),
-		(0, 1),	(0, 2),	(0, 3),	(0, 4),
-		(1, 2),	(1, 3),	(1, 4),
-		(2, 1),	(2, 3),	(2, 4),
-		(3, 1),	(3, 2),	(3, 4),
-		(4, 1), (4, 2),	(4, 3)
-	)
-	for result in results:
-		wins = result[0]
-		losses = result[1]
+	games = 7
+	expectedChange = 1000
 
-		print(
-			("{0}\n"
-			"Net: ${1:.2f}\n"
-			"Bet: ${2:.2f}\n")
-			.format(result, winnings(wins, losses), bets(wins, losses))
-		)
+	print("Total games [{0}]: ".format(games), end='')
+	newGames = input()
+	print("Expected change [${0:.2f}]: $".format(expectedChange), end='')
+	newExpectedChange = input()
 
-def winnings(wins, losses):
-	if wins >= 4:
-		return 1000
-	elif losses >= 4:
-		return -1000
-	else:
-		return (winnings(wins + 1, losses) + winnings(wins, losses + 1)) / 2
+	if len(newGames) > 0:
+		games = int(newGames)
+	if len(newExpectedChange) > 0:
+		expectedChange = float(newExpectedChange)
 
-def bets(wins, losses):
-	if wins >= 4 or losses >= 4:
-		return 0
-	else:
-		return (abs(winnings(wins + 1, losses) - winnings(wins, losses + 1))) / 2
+	calc = BetCalculator(games, expectedChange)
+
+	print("{0} games, ${1:.2f} expected change".format(games, expectedChange), end='\n\n')
+	
+	print("Bets before")
+	calc.print(calc.bets)
+	print()
+	print("Winnings after")
+	calc.print(calc.winnings)
+
+class BetCalculator:
+	def __init__(self, games, expectedReturn):
+		self.games = games
+		self.bestOf = (games + 1) // 2
+		self.expectedReturn = expectedReturn
+	
+	def winnings(self, wins, losses):
+		if wins >= self.bestOf:
+			return self.expectedReturn
+		elif losses >= self.bestOf:
+			return -self.expectedReturn
+		else:
+			return (self.winnings(wins + 1, losses) + self.winnings(wins, losses + 1)) / 2
+
+	def bets(self, wins, losses):
+		if wins >= self.bestOf or losses >= self.bestOf:
+			return 0
+		else:
+			return (abs(self.winnings(wins + 1, losses) - self.winnings(wins, losses + 1))) / 2
+		
+	def print(self, fun):
+		print("W\\L", end='')
+		for i in range(self.bestOf + 1):
+			print("\t{0}".format(i), end='')	# Losses columns
+		print()
+
+		for i in range(self.bestOf + 1):
+			print("{0}".format(i), end='')	# Wins rows
+
+			for j in range(self.bestOf + 1):
+				print(
+					"\t${0}".format(fun(i, j)) if (i + j <= self.games) else "\t",
+					end=''
+				)
+			print()
 
 if __name__ == "__main__":
 	main()
