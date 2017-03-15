@@ -17,5 +17,5 @@ def extractFirsts(string):
 	
 	return firsts
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	main()
