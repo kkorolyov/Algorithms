@@ -30,18 +30,17 @@ def memoCost(poles, stacks):
 		elif len(poles) == 2:	# Must move this pole
 			return poles[-1].move(poles[-2])[0]	# Return cost only
 		else:
-			noMove = cost(poles[:-1], stacks - 1)
+			moveCost, newPole = poles[-1].move(poles[-2])
+			newPoles = poles[:-2]
+			newPoles.append(newPole)
 
+			move = moveCost + cost(newPoles, stacks)
+			
 			p, s = len(poles) - 1, stacks - 1
 			if table[p][s] < 0:
-				moveCost, newPole = poles[-1].move(poles[-2])
-				newPoles = poles[:-2]
-				newPoles.append(newPole)
-
-				move = moveCost + cost(newPoles, stacks)
-
-				table[p][s] = move
-			return min(noMove, table[p][s])
+				noMove = cost(poles[:-1], stacks - 1)
+				table[p][s] = noMove
+			return min(move, table[p][s])
 	
 	return cost(poles, stacks)
 
