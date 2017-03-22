@@ -25,25 +25,21 @@ class item:
 		return "item({0}, {1})".format(self.value, self.weight)
 
 def knapsack(items, maxWeight):
-	table = [None * maxWeight]	# Init with infinity max value for each weight possibility
-	weight = 0
+	results = {}
 	
-	def solve(items):
-		if len(items) <= 0:
+	def solve(items, weight):
+		if len(items) <= 0 or weight > maxWeight:
 			return 0
 		
-		newWeight = weight + items[0].weight
-		if table[newWeight] is not None:
+		if weight not in results:
 			next = items[0]
 			remaining = items[1:]
 
-			if newWeight > maxWeight:
-				ta
+			results[weight] = max(solve(remaining, weight), next.value + knapsack(remaining, next.weight + weight))
+		
+		return results[weight]
 
-	if next.weight <= maxWeight:
-		return max(next.value + knapsack(remaining, maxWeight - next.weight), knapsack(remaining, maxWeight))
-	else:
-		return knapsack(remaining, maxWeight)
+	return solve(items, 0)
 
 if __name__ == "__main__":
 	main()
