@@ -5,7 +5,7 @@ def main():
 
 def valid(word):
 	word = word.upper()
-	vowels = ("A", "E", "I", "O", "U", "Y")
+	vowels = {"A", "E", "I", "O", "U", "Y"}
 
 	for i in range(1, len(word)):
 		if (word[i] == word[i - 1]) or (word[i] in vowels and word[i - 1] in vowels):
